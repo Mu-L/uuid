@@ -9,7 +9,10 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 16.x]
+        # 16.14+ requires import assertions for *.json imports, but this causes
+        # syntax errors on older node versions so we're locking CI to 16.13 for
+        # now
+        node-version: [10.x, 12.x, 14.x, 16.13]
 
     steps:
     - uses: actions/checkout@v1
