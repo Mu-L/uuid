@@ -1,4 +1,4 @@
-import stringify from './stringify.js';
+import { unsafeStringify } from './stringify.js';
 import parse from './parse.js';
 
 function stringToBytes(str) {
@@ -26,7 +26,7 @@ export default function v35(name, version, hashfunc) {
       namespace = parse(namespace);
     }
 
-    if (namespace.length !== 16) {
+    if (namespace?.length !== 16) {
       throw TypeError('Namespace must be array-like (16 iterable integer values, 0-255)');
     }
 
@@ -51,7 +51,7 @@ export default function v35(name, version, hashfunc) {
       return buf;
     }
 
-    return stringify(bytes);
+    return unsafeStringify(bytes);
   }
 
   // Function#name is not settable on some platforms (#270)
