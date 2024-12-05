@@ -8,10 +8,11 @@
 For the creation of [RFC9562](https://www.rfc-editor.org/rfc/rfc9562.html) (formally [RFC4122](https://www.rfc-editor.org/rfc/rfc4122.html)) UUIDs
 
 - **Complete** - Support for all RFC9562 UUID versions
-- **Cross-platform** - Support for ...
-  - CommonJS, [ECMAScript Modules](#ecmascript-modules)
-  - NodeJS 16+ ([LTS releases](https://github.com/nodejs/Release))
-  - Chrome, Safari, Firefox, Edge browsers
+- **Cross-platform** - Support for...
+  - ESM & Common JS
+  - [Chrome, Safari, Firefox, Edge browsers](#support)
+  - [NodeJS](#support)
+  - [React Native / Expo](#react-native--expo)
 - **Secure** - Cryptographically-strong random values
 - **Compact** - No dependencies, [tree-shakable](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking)
 - **CLI** - Includes the [`uuid` command line](#command-line) utility
@@ -366,7 +367,7 @@ Create an RFC version 7 (random) UUID
 | [`options.msecs = (current time)`] | RFC "timestamp" field (`Number` of milliseconds, unix epoch) |
 | [`options.random = (random)`] | `Array` of 16 random bytes (0-255) used to generate other fields, above |
 | [`options.rng`] | Alternative to `options.random`, a `Function` that returns an `Array` of 16 random bytes (0-255) |
-| [`options.seq = (random)`] | 32-bit sequence `Number` between 0 - 0xffffffff. This may be provided to help insure uniqueness for UUIDs generated within the same millisecond time interval. Default = random value. |
+| [`options.seq = (random)`] | 32-bit sequence `Number` between 0 - 0xffffffff. This may be provided to help ensure uniqueness for UUIDs generated within the same millisecond time interval. Default = random value. |
 | [`buffer`] | `Array \| Buffer` If specified, uuid will be written here in byte-form, starting at `offset` |
 | [`offset` = 0] | `Number` Index to start writing UUID bytes in `buffer` |
 | _returns_ | UUID `String` if no `buffer` is specified, otherwise returns `buffer` |
@@ -474,10 +475,35 @@ defined by RFC9562
 
 ## `options` Handling for Timestamp UUIDs
 
-Prior to `uuid@11`, it was possible for `options` state to interfere with the internal state used to insure uniqueness of timestamp-based UUIDs (the `v1()`, `v6()`, and `v7()` methods). Starting with `uuid@11`, this issue has been addressed by using the presence of the `options` argument as a flag to select between two possible behaviors:
+Prior to `uuid@11`, it was possible for `options` state to interfere with the internal state used to ensure uniqueness of timestamp-based UUIDs (the `v1()`, `v6()`, and `v7()` methods). Starting with `uuid@11`, this issue has been addressed by using the presence of the `options` argument as a flag to select between two possible behaviors:
 
 - Without `options`: Internal state is utilized to improve UUID uniqueness.
 - With `options`: Internal state is **NOT** used and, instead, appropriate defaults are applied as needed.
+
+## Support
+
+**Browsers**: `uuid` [builds are tested](/uuidjs/uuid/blob/main/wdio.conf.js) against the latest version of desktop Chrome, Safari, Firefox, and Edge. Mobile versions of these same browsers are expected to work but aren't currently tested.
+
+**Node**: `uuid` [builds are tested](https://github.com/uuidjs/uuid/blob/main/.github/workflows/ci.yml#L26-L27) against node ([LTS releases](https://github.com/nodejs/Release)), plus one prior. E.g. `node@18` is in maintainence mode, and `node@22` is the current LTS release. So `uuid` supports `node@16`-`node@22`.
+
+**Typescript**: TS versions released within the past two years are supported. [source](https://github.com/microsoft/TypeScript/issues/49088#issuecomment-2468723715)
+
+## Known issues
+
+<!-- This header is referenced as an anchor in src/rng-browser.ts -->
+### "getRandomValues() not supported"
+
+This error occurs in environments where the standard [`crypto.getRandomValues()`](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues) API is not supported. This issue can be resolved by adding an appropriate polyfill:
+
+#### React Native / Expo
+
+1. Install [`react-native-get-random-values`](https://github.com/LinusU/react-native-get-random-values#readme)
+1. Import it _before_ `uuid`. Since `uuid` might also appear as a transitive dependency of some other imports it's safest to just import `react-native-get-random-values` as the very first thing in your entry point:
+
+```javascript
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+```
 
 ---
 

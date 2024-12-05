@@ -1,4 +1,4 @@
-import { UUIDTypes, Version7Options } from './_types.js';
+import { UUIDTypes, Version7Options } from './types.js';
 import rng from './rng.js';
 import { unsafeStringify } from './stringify.js';
 
@@ -10,7 +10,7 @@ type V7State = {
 const _state: V7State = {};
 
 function v7(options?: Version7Options, buf?: undefined, offset?: number): string;
-function v7(options?: Version7Options, buf?: Uint8Array, offset?: number): Uint8Array;
+function v7(options: Version7Options | undefined, buf: Uint8Array, offset?: number): Uint8Array;
 function v7(options?: Version7Options, buf?: Uint8Array, offset?: number): UUIDTypes {
   let bytes: Uint8Array;
 

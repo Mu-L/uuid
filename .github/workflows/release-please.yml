@@ -4,6 +4,7 @@
 
 on:
   workflow_dispatch:
+
   push:
     branches:
       - main
@@ -19,12 +20,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           token: ${{ secrets.UUID_RELEASE_PLEASE_TOKEN }}
           release-type: node
 
-      # Steps below handle publication to NPM
+      - run: echo "Release created?... ${{ steps.release.outputs.release_created }}"
 
+      # Steps below handle publication to NPM
       - uses: actions/checkout@v4
         if: ${{ steps.release.outputs.release_created }}
       - uses: actions/setup-node@v4

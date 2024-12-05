@@ -1,4 +1,4 @@
-import { UUIDTypes } from './_types.js';
+import { UUIDTypes } from './types.js';
 import md5 from './md5.js';
 import v35, { DNS, URL } from './v35.js';
 
@@ -13,7 +13,7 @@ function v3(
 function v3(
   value: string | Uint8Array,
   namespace: UUIDTypes,
-  buf?: Uint8Array,
+  buf: Uint8Array,
   offset?: number
 ): Uint8Array;
 function v3(value: string | Uint8Array, namespace: UUIDTypes, buf?: Uint8Array, offset?: number) {
